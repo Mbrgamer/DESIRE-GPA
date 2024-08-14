@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SGPA Calculator</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background-color: #f0f0f0;
+		}
+		.container {
+			max-width: 500px;
+			margin: 50px auto;
+			padding: 30px;
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
+		.form-group {
+			margin-bottom: 20px;
+		}
+		.label {
+			display: block;
+			margin-bottom: 10px;
+			font-weight: bold;
+			color: #333;
+		}
+		.input-field {
+			width: 100%;
+			height: 40px;
+			padding: 10px;
+			margin-bottom: 10px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			font-size: 16px;
+		}
+		.button {
+			width: 100%;
+			height: 40px;
+			padding: 10px;
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 16px;
+			font-weight: bold;
+		}
+		.button:hover {
+			background-color: #3e8e41;
+		}
+		.result {
+			margin-top: 20px;
+			font-size: 24px;
+			font-weight: bold;
+			color: #666;
+		}
+		@keyframes loading {
+			0% {
+				content: "Calculating...";
+			}
+			50% {
+				content: "Calculating....";
+			}
+			100% {
+				content: "Calculating......";
+			}
+		}
+		.loading::after {
+			content: "Calculating...";
+			animation: loading 2s infinite;
+		}
+	
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h2>SGPA Calculator</h2>
+		<form>
+			
+			<div class="form-group">
+				<label for="creditTotal">Total Credits:</label>
+				<input class="input-field" type="number" id="creditTotal" name="creditTotal">
+			</div>
+			<div class="form-group">
+				<label for="futureCredits">Future Credits:</label>
+				<input class="input-field" type="number" id="futureCredits" name="futureCredits">
+			</div>
+			<div class="form-group">
+				<label for="desiredGPA">Desired CGPA:</label>
+				<input class="input-field" type="number" id="desiredGPA" name="desiredGPA" step="0.01">
+			</div>
+			<div class="form-group">
+				<label for="currentGPA">Current CGPA:</label>
+				<input class="input-field" type="number" id="currentGPA" name="currentGPA" step="0.01">
+			</div>
+			<input class="button" type="button" value="Calculate SGPA" onclick="calculateSGPA()">
+			<div class="form-group">
+				<label for="futureSGPA">Future SGPA:</label>
+				<input class="input-field" type="number" id="futureSGPA" name="futureSGPA" step="0.01">
+			</div>
+			<input class="button" type="button" value="Calculate CGPA" onclick="calculateCGPA()">
+			<div class="result" id="result"></div>
+
+		</form>
+	</div>
+
+	<script>
+		function calculateSGPA() {
+			document.getElementById("result").innerHTML = "<div class='loading'></div>";
+			setTimeout(function() {
+				var creditTotal = document.getElementById("creditTotal").value;
+				var futureCredits = document.getElementById("futureCredits").value;
+				var desiredGPA = document.getElementById("desiredGPA").value;
+				var currentGPA = document.getElementById("currentGPA").value;
+				var totalCredits = parseInt(creditTotal) + parseInt(futureCredits);
+				var currentGPATotal = parseFloat(currentGPA) * parseInt(creditTotal);
+				var desiredGPATotal = parseFloat(desiredGPA) * totalCredits;
+				var futureGPATotal = desiredGPATotal - currentGPATotal;
+				var sgpa = futureGPATotal / parseInt(futureCredits);
+				var maxSGPA = 4.0; // assuming maximum SGPA is 4.0
+				var maxCGPA = (parseFloat(currentGPA) * parseInt(creditTotal) + maxSGPA * parseInt(futureCredits)) / totalCredits;
+				document.getElementById("result").innerHTML = "SGPA needed to get " + desiredGPA + " CGPA: " + sgpa.toFixed(2) + "<br>" + "Maximum SGPA that can be obtained: " + maxSGPA + "<br>" + "Maximum CGPA that can be obtained: " + maxCGPA.toFixed(2);
+			}, 1000);
+		}
+
+		function calculateCGPA() {
+			document.getElementById("result").innerHTML = "<div class='loading'></div>";
+			setTimeout(function() {
+				var creditTotal = document.getElementById("creditTotal").value;
+				var futureCredits = document.getElementById("futureCredits").value;
+				var currentGPA = document.getElementById("currentGPA").value;
+				var futureSGPA = document.getElementById("futureSGPA").value;
+				var totalCredits = parseInt(creditTotal) + parseInt(futureCredits);
+				var currentGPATotal = parseFloat(currentGPA) * parseInt(creditTotal);
+				var futureGPATotal = parseFloat(futureSGPA) * parseInt(futureCredits);
+				var newCGPA = (currentGPATotal + futureGPATotal) / totalCredits;
+				document.getElementById("result").innerHTML = "With an SGPA of " + futureSGPA + " in the future " + futureCredits + " credits, your new CGPA will be: " + newCGPA.toFixed(2);
+			}, 1000);
+		}
+	</script>
+</body>
+</html>
